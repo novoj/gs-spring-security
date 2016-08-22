@@ -12,10 +12,13 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import sample.security.UserRepositoryUserDetailsService;
 
 @Configuration
@@ -69,9 +72,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     // @formatter:off
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+		final SwitchUserFilter filter = new SwitchUserFilter();
+		filter.setSwitchUserUrl("/switchUser");
+		filter.setUsernameParameter("username");
+		filter.setExitUserUrl("/restoreUserBack");
+		http
+			.addFilterAfter(filter, FilterSecurityInterceptor.class)
             .authorizeRequests()
-                .antMatchers("/resources/**","/signup").permitAll()
+				.antMatchers("/switchUser").hasAnyAuthority("ROLE_ADMIN")
+				.antMatchers("/resources/**","/signup").permitAll()
                 .anyRequest().authenticated()
                 .and()
             .formLogin()
@@ -90,4 +99,5 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .userDetailsService(userDetailsService);
     }
     // @formatter:on
+
 }

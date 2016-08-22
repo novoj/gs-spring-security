@@ -33,6 +33,13 @@ configurations.all {
 
 dependencies {
 
+    def tomcatVersion = '7.0.59'
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+           "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}"
+    tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
+        exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
+    }
+
     providedCompile "javax.servlet:javax.servlet-api:3.0.1",
                     'javax.servlet.jsp:jsp-api:2.1'
 
