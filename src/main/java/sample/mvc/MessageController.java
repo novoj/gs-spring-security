@@ -15,14 +15,7 @@
  */
 package sample.mvc;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import sample.data.Message;
-import sample.data.MessageRepository;
-import sample.data.User;
-import sample.data.UserRepository;
-import sample.security.CurrentUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,6 +24,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import sample.data.Message;
+import sample.data.MessageRepository;
+import sample.data.User;
+import sample.data.UserRepository;
+import sample.security.CurrentUser;
+
+import javax.validation.Valid;
 
 /**
  * Controller for managing {@link Message} instances.
@@ -50,7 +50,17 @@ public class MessageController {
         this.userRepository = userRepository;
     }
 
-    @RequestMapping(method=RequestMethod.GET)
+	/*
+
+	Arrays.stream(new RuntimeException().getStackTrace())
+	  .map(StackTraceElement::getClassName)
+	  .filter(ste -> ste.contains("org.springframework.security"))
+	  .distinct()
+	  .collect(Collectors.toList());
+
+	 */
+
+	@RequestMapping(method=RequestMethod.GET)
     public ModelAndView list(@CurrentUser User currentUser) {
         Iterable<Message> messages = messageRepository.findByToId(currentUser.getId());
         return new ModelAndView("messages/inbox", "messages", messages);

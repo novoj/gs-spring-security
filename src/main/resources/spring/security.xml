@@ -9,7 +9,7 @@
 
 	<http pattern="/css/**" security="none"/>
 
-	<http use-expressions="true">
+	<http use-expressions="false">
 		<intercept-url pattern="/login.jsp*" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="https"/>
 		<intercept-url pattern="/**" access="ROLE_USER" requires-channel="any"/>
 
